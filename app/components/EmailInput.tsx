@@ -60,7 +60,7 @@ function EmailInput() {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
-        Email:
+        Email Checker:
       </label>
       <input
         // Add Tailwind CSS classes to style the input box
@@ -69,7 +69,7 @@ function EmailInput() {
         } focus:ring focus:ring-blue-300 focus:border-blue-500`}
         id="email"
         type="email"
-        placeholder="Email"
+        placeholder="type the email and click away, if it already exits, you will be notified"
         // Bind the email state variable to the value of the input box
         value={email}
         // Define a function to handle the input box change event
