@@ -26,7 +26,8 @@ export default async function handler(
             include: {
               Comment: true,
             },
-          }
+          },
+        },
       });
       return res.status(200).json(data);
     } catch (error) {
