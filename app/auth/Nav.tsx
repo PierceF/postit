@@ -14,7 +14,7 @@ import Logged from "./Logged";
 
 export default async function Nav() {
   const session = await getServerSession(authOptions);
-  console.log(session);
+  // console.log(session);
   return (
     <nav className="flex justify-between items-center py-8">
       <Link href="/">

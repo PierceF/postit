@@ -2,6 +2,7 @@ import "./globals.css";
 import QueryWrapper from "./auth/QueryWrapper";
 import Nav from "./auth/Nav";
 import { Roboto } from "@next/font/google";
+import EmailInput from "@/app/components/EmailInput";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
         <QueryWrapper>
           <Nav />
           {children}
+          <EmailInput />
         </QueryWrapper>
       </body>
     </html>
