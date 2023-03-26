@@ -9,6 +9,8 @@ export default function CreatePost() {
   const [isDisabled, setIsDisabled] = useState(false);
   let toastPostID: string;
 
+  const queryClient = useQueryClient();
+
   // create a post
   const { mutate } = useMutation(
     async ({ title }: { title: string }) =>
@@ -24,6 +26,8 @@ export default function CreatePost() {
         toast.success(`Post created ✨`, { id: toastPostID });
         setTitle("");
         setIsDisabled(false);
+        // Invalidate the 'posts' query to refetch the data
+        queryClient.invalidateQueries(["posts"]);
       },
     }
   );

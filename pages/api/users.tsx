@@ -2,14 +2,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../prisma/client";
 
 type User = {
-  id: number;
-  email: string;
+  id: string;
+  email: string | null;
   // other fields
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ data: User[] } | { error: string }>
+  res: NextApiResponse<
+    { data: User[] } | { message: string } | { error: string }
+  >
 ) {
   if (req.method === "GET") {
     // fetch all users
@@ -20,7 +22,7 @@ export default async function handler(
       return res.status(400).json({ error: "Error fetching users" });
     }
   } else if (req.method === "DELETE") {
-    const id = Number(req.query.id);
+    const id = req.query.id as string;
     // delete user with given id
     try {
       await prisma.user.delete({
@@ -28,7 +30,7 @@ export default async function handler(
           id,
         },
       });
-      return res.status(204).send("");
+      return res.status(204).json({ message: "User deleted" });
     } catch (error) {
       return res
         .status(400)
