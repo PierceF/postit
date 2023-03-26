@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { User } from "@prisma/client";
 import {
   DataGrid,
@@ -7,6 +7,7 @@ import {
   GridColDef,
   GridRowsProp,
   GridSelectionModel,
+  GridValidRowModel,
 } from "@mui/x-data-grid";
 
 async function deleteUser(id: number): Promise<void> {
@@ -18,57 +19,47 @@ async function deleteUser(id: number): Promise<void> {
   }
 }
 
+interface FetchedUser {
+  id: number;
+  name: string;
+  email: string;
+}
+
 function UserTable() {
-  const [selectedRows, setSelectedRows] = useState<User[]>([]);
+  const [selectedRows, setSelectedRows] = useState<FetchedUser[]>([]);
   const queryClient = useQueryClient();
 
-  async function getUsers(): Promise<User[]> {
+  async function getUsers(): Promise<FetchedUser[]> {
     const response = await fetch("/api/users");
     const { data: users } = await response.json();
     return users;
   }
 
-  // Fetch all users from the database
   const {
     data: users = [],
     isLoading,
     isError,
-  } = useQuery<User[]>(["users", selectedRows], getUsers);
+  } = useQuery<FetchedUser[]>(["users", selectedRows], getUsers);
 
-  // Define the columns for the table
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 200 },
     { field: "email", headerName: "Email", width: 250 },
   ];
 
-  // Convert the users array to rows for the table
   const rows: GridRowsProp = users.map((user) => ({
     id: user.id,
     name: user.name,
     email: user.email,
   }));
 
-  // Handle row selection
-  const handleRowSelection = (
-    selectionModel: GridSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {
+  const handleRowSelection = (selectionModel: GridSelectionModel) => {
     const selectedUsers = selectionModel.map(
-      (id) => rows.find((row) => row.id === id)!
+      (id) => rows.find((row) => row.id === id)! as FetchedUser
     );
     setSelectedRows(selectedUsers);
   };
 
-  // Delete mutation
-  const deleteMutation = useMutation(deleteUser, {
-    onSuccess: () => {
-      setSelectedRows([]);
-      queryClient.invalidateQueries(["users"]);
-    },
-  });
-
-  // Handle row deletion
   const handleDeleteRows = async () => {
     await Promise.all(
       selectedRows.map(async (user) => {

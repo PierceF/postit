@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { PostType } from "../types/Posts";
 
 interface PostProps {
   avatar: string;
   name: string;
   postTitle: string;
   id: string | number;
-  comments: string[];
+  comments: PostType["Comment"];
 }
 
 export default function Post({
@@ -35,7 +36,7 @@ export default function Post({
       <div className="flex gap-4 cursor-pointer items-center">
         <Link href={`/post/${id}`} as={`/post/${postTitle + id}`}>
           <p className="test-sm font-bold text-gray-700">
-            {comments.length} Comments
+            {(comments || []).length} Comments
           </p>
         </Link>
       </div>

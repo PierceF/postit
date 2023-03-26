@@ -14,9 +14,14 @@ export default async function handler(
 
     // fetch all posts by user
     try {
+      const userEmail = session?.user?.email;
+      if (!userEmail) {
+        return res.status(400).json({ error: "Email not found" });
+      }
+
       const data = await prisma.user.findUnique({
         where: {
-          email: session?.user?.email,
+          email: userEmail,
         },
         include: {
           Post: {
